@@ -1,0 +1,18 @@
+[package]
+name = "sherbus-rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cortex-m = "0.7.7"
+cortex-m-rt = "0.7.3"
+embedded-hal = { version = "1.0.0" }
+
+rp-pico = "0.9"
+pio = "0.2.1"
+
+parser = {version = "0.1.0", path = "parser"}
+#mask = {version = "0.1.0",path= "mask"}
+rp2040-hal = "0.10.2"
+fugit = "0.3.7"
+pio-proc = "0.2.2"
