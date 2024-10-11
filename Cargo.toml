@@ -14,5 +14,5 @@ pio = "0.2.1"
 parser = {version = "0.1.0", path = "parser"}
 #mask = {version = "0.1.0",path= "mask"}
 rp2040-hal = "0.10.2"
-#fugit = "0.3.7"
+fugit = "0.3.7"
 pio-proc = "0.2.2"
