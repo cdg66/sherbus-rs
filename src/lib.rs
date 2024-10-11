@@ -203,7 +203,7 @@ where
     }
 
     //if there is a message read it out othewise return None
-    pub fn read(mut self, callback:bool, parse:bool )-> (Option<[u32; 8]>,Option<parser::PacketParsed>){
+    pub fn read(&mut self, callback:bool, parse:bool )-> (Option<[u32; 8]>,Option<parser::PacketParsed>){
         if self.rx.is_full() {
             // we have a recived message
             self.rxsm.restart();
