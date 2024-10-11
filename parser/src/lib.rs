@@ -125,7 +125,8 @@ pub mod parser
                 }
                 None => {
                     // impossible
-                    panic!("packet_to_send should be Some but found None instead ");
+                    return None;
+                    //panic!("packet_to_send should be Some but found None instead ");
                 }
             }
             return packet_to_send;
@@ -169,7 +170,8 @@ pub mod parser
                 }
                 None => {
                     // impossible
-                    panic!("packet_to_send should be Some but found None instead ");
+                    return None;
+                    //panic!("packet_to_send should be Some but found None instead ");
                 }
             }
             return packet_to_send;
@@ -189,7 +191,8 @@ pub mod parser
             }
             None => {
                 // impossible
-                panic!("packet_to_send should be Some but found None instead ");
+                return None;
+                //panic!("packet_to_send should be Some but found None instead ");
             }
         }
         return packet_to_send;
