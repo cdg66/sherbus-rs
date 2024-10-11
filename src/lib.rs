@@ -1,16 +1,16 @@
 #![no_std]
 
-use cortex_m;
-use embedded_hal::delay::DelayNs;
-use fugit::{ExtU32, HertzU32};
-use ::parser::parser::RawPacket;
+//use cortex_m;
+//use embedded_hal::delay::DelayNs;
+
+use parser::parser::*;
+use parser::parser::parse_rx;
 use rp2040_hal::{
     gpio::{AnyPin, Function, FunctionPio0, FunctionPio1, Pin, PinId},
     pio::{Buffers, PIOBuilder, PIOExt, PinDir, Running, Rx, ShiftDirection, StateMachine, StateMachineIndex, Tx, UninitStateMachine, ValidStateMachine, PIO},
 };
 use core::prelude::v1::Option;
 
-use parser::parser;
 //use mask::Mask;
 
 // Raw implementation of the driver
@@ -63,7 +63,7 @@ where
         smtx: UninitStateMachine<(P, SMTX)>,
         smrx: UninitStateMachine<(P, SMRX)>,
         smc: UninitStateMachine<(P, SMC)>,
-        clock_freq: fugit::HertzU32,
+        //clock_freq: fugit::HertzU32,
 
     )-> Self{
         // Tx pio machine
@@ -134,7 +134,7 @@ where
 
         // Initialize and start tx machine
         let installed = pio.install(&program_tx.program).unwrap();
-        let (int, frac) = (100, 0); //TODO: pass a freq and get values
+        let (int, frac) = (1, 0); //TODO: pass a freq and get values
         let (mut tx0, _, mut tx) = PIOBuilder::from_installed_program(installed)
             .set_pins(d.id().num, 1)
             .side_set_pin_base(den.id().num)
@@ -203,7 +203,7 @@ where
     }
 
     //if there is a message read it out othewise return None
-    pub fn read(&mut self, callback:bool, parse:bool )-> (Option<[u32; 8]>,Option<parser::PacketParsed>){
+    pub fn read(&mut self, callback:bool, parse:bool )-> (Option<[u32; 8]>,Option<PacketParsed>){
         if self.rx.is_full() {
             // we have a recived message
             self.rxsm.restart();
@@ -227,7 +227,7 @@ where
             }
             let mut parsed = None;
             if parse == true{
-                parsed = parser::parse_rx(RawPacket{data : buffer});
+                parsed = parse_rx(RawPacket{data : buffer});
             }
 
             return (Some(buffer),parsed);
