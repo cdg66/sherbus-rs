@@ -3,13 +3,14 @@
 //use cortex_m;
 //use embedded_hal::delay::DelayNs;
 
-use parser::parser::*;
-use parser::parser::parse_rx;
+use parser::parser::{parse_rx,parse_tx,PacketParsed,RawPacket,PacketType};
 use rp2040_hal::{
     gpio::{AnyPin, Function, FunctionPio0, FunctionPio1, Pin, PinId},
     pio::{Buffers, PIOBuilder, PIOExt, PinDir, Running, Rx, ShiftDirection, StateMachine, StateMachineIndex, Tx, UninitStateMachine, ValidStateMachine, PIO},
 };
 use core::prelude::v1::Option;
+
+
 
 //use mask::Mask;
 
@@ -153,7 +154,7 @@ where
 
         // Initialize and start rx machine
         let installed2 = pio.install(&program_rx.program).unwrap();
-        let (mut rx0, mut rx, void_tx) = PIOBuilder::from_installed_program(installed2)
+        let (mut rx0, mut rx, _) = PIOBuilder::from_installed_program(installed2)
             .autopush(true)
             .buffers(Buffers::OnlyRx)
             .clock_divisor_fixed_point(int, frac)
@@ -182,7 +183,7 @@ where
         Self {tx: tx, rx: rx, _tx_pin: TX::from(d),_tx_en_pin: TXEN::from(den), _rx_pin: RX::from(r), _coll_pin: C::from(c),txsm: tx0, rxsm: rx0, csm: coll0, pio: pio, /*masks: Mask::new()*/ }
     }
 
-    pub fn write_read(&mut self, buffer:&[u32;8]){
+    pub fn write_read(&mut self, buffer:&[u32;8]) -> Result<i8,i8>{
         for i in buffer.iter() {
             self.tx.write(*i);
         }
@@ -194,12 +195,17 @@ where
             //we got a collision
             {
                 //info!("we got a collision");
-                //tx0.restart();
-                //tx0.clear_fifos();
-                //pio.clear_irq(0x04);
+                self.txsm.restart();
+                self.txsm.clear_fifos();
+                self.pio.clear_irq(0x04);
+                self.csm.restart();
+        
+                return Err(-1);
+                
             }
         }
         self.rxsm.restart();
+        return Ok(0); 
     }
 
     //if there is a message read it out othewise return None
