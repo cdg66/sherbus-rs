@@ -115,9 +115,9 @@ where
 
         let collision = pio_proc::pio_asm!(
             ".wrap_target",
-            "wait 1 irq 0 ",// wait that we are writing
-            "nop",
-            "nop", //
+            "wait 1 irq 1 ",// wait that we are writing
+            //"nop",
+            //"nop", //
 
             "nocoll:"
             "jmp pin coll", //while there is no coll continue
