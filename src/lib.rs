@@ -191,18 +191,18 @@ where
                       //delay.delay_ms(1000); // wait for tx to complete
         while !self.rx.is_full() {
             let mut status = self.pio.get_irq_raw();
-            if (status & 0x04) == 0x04
-            //we got a collision
-            {
-                //info!("we got a collision");
-                self.txsm.restart();
-                self.txsm.clear_fifos();
-                self.pio.clear_irq(0x04);
-                self.csm.restart();
+            // if (status & 0x04) == 0x04
+            // //we got a collision
+            // {
+            //     //info!("we got a collision");
+            //     self.txsm.restart();
+            //     self.txsm.clear_fifos();
+            //     self.pio.clear_irq(0x04);
+            //     self.csm.restart();
         
-                return Err(-1);
+            //     return Err(-1);
                 
-            }
+            // }
         }
         self.rxsm.restart();
         return Ok(0); 
