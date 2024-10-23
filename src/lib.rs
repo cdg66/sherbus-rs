@@ -183,7 +183,7 @@ where
         Self {tx: tx, rx: rx, _tx_pin: TX::from(d),_tx_en_pin: TXEN::from(den), _rx_pin: RX::from(r), _coll_pin: C::from(c),txsm: tx0, rxsm: rx0, csm: coll0, pio: pio, /*masks: Mask::new()*/ }
     }
 
-    pub fn write_read(&mut self, buffer:&[u32;8]) -> Result<i8,i8>{
+    pub fn write_read(&mut self, buffer:&[u32;8]) -> Result<[u32; 8],i8>{
         for i in buffer.iter() {
             self.tx.write(*i);
         }
@@ -204,8 +204,12 @@ where
                 
             // }
         }
+        let mut retbuf:[u32;8] = [0;8];
+        for (i, value) in retbuf.iter_mut().enumerate() {
+            *value = self.rx.read().unwrap_or(0); // Use unwrap_or for default value if read fails
+        }
         self.rxsm.restart();
-        return Ok(0); 
+        return Ok(retbuf); 
     }
 
     //if there is a message read it out othewise return None
