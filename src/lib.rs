@@ -204,11 +204,12 @@ where
                 
             // }
         }
+        self.rxsm.restart();
         let mut retbuf:[u32;8] = [0;8];
         for (i, value) in retbuf.iter_mut().enumerate() {
             *value = self.rx.read().unwrap_or(0); // Use unwrap_or for default value if read fails
         }
-        self.rxsm.restart();
+        
         return Ok(retbuf); 
     }
 
